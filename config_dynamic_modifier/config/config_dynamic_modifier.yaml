@@ -1,0 +1,6 @@
+config_dynamic_modifier_node:
+  ros__parameters:
+    config_file_path: "/home/tc/Desktop/auto_sentry2025/src/auto_sentry2025/robot_bring_up/config/sentry.yaml"  # 配置文件路径
+    point_topic: "/clicked_point"                  # RViz点击点话题
+    status_topic: "/config_modifier/status"        # 状态发布话题
+    parameter_points_count: [2, 2, 2, 2, 4, 4, 4, 4, 4, 4, 4, 4] # 每个区域需要的点数（前4个为removed_area，后8个为tunnel）

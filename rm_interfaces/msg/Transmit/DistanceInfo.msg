@@ -1,0 +1,10 @@
+std_msgs/Header header
+float32 current_x
+float32 current_y
+float32 current_z
+float32 target_x
+float32 target_y
+float32 target_z
+float32 distance
+float32 height_diff
+bool arrived

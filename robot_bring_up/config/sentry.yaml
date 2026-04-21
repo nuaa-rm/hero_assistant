@@ -1,0 +1,304 @@
+map_server:
+    ros__parameters:
+        yaml_filename: "/home/tc/Desktop/auto_sentry2025/src/auto_sentry2025/robot_bring_up/maps/RMUC.yaml"
+
+bt_navigator:
+    ros__parameters:
+        global_frame: map
+        robot_base_frame: base_link
+        odom_topic: "/Odometry"
+        bt_loop_duration: 10
+        default_server_timeout: 20
+        plugin_lib_names:
+            - nav2_compute_path_to_pose_action_bt_node
+            - nav2_compute_path_through_poses_action_bt_node
+            - nav2_follow_path_action_bt_node
+            - nav2_clear_costmap_service_bt_node
+            - nav2_goal_updated_condition_bt_node
+            - nav2_rate_controller_bt_node
+            - nav2_recovery_node_bt_node
+            - nav2_pipeline_sequence_bt_node
+            - nav2_round_robin_node_bt_node
+            - nav2_single_trigger_bt_node
+            - nav2_remove_passed_goals_action_bt_node
+            - nav2_truncate_path_action_bt_node
+
+robot_serial_node:
+    ros__parameters:
+        dog_threshold: 100
+        frequency: 50.0
+
+controller_server:
+    ros__parameters:
+        odom_topic: "/Odometry"
+        controller_frequency: 30.0
+        controller_plugin_types: ["teb_local_planner::TebLocalPlannerROS"]
+        goal_checker_plugins: ["general_goal_checker"]
+        controller_plugins: ["FollowPath"]
+        general_goal_checker:
+            stateful: True
+            plugin: "nav2_controller::SimpleGoalChecker"
+            xy_goal_tolerance: 0.1
+            yaw_goal_tolerance: 0.1
+        FollowPath:
+            plugin: teb_local_planner::TebLocalPlannerROS
+            teb_autosize: 1.0
+            dt_ref: 0.6
+            dt_hysteresis: 0.02
+            max_samples: 500
+            min_samples: 3
+            global_plan_overwrite_orientation: True
+            allow_init_with_backwards_motion: True
+            max_global_plan_lookahead_dist: 1.6
+            global_plan_viapoint_sep: 0.2
+            global_plan_prune_distance: 0.6
+            force_reinit_new_goal_dist: 1.0
+            force_reinit_new_goal_angular: 0.78
+            min_resolution_collision_check_angular: 3.14159265
+            exact_arc_length: True
+            feasibility_check_no_poses: 1
+            publish_feedback: True
+            max_vel_x: 3.0
+            max_vel_y: 3.0
+            max_vel_x_backwards: 3.0
+            max_vel_theta: 1.7
+            acc_lim_x: 8.0
+            acc_lim_y: 8.0
+            acc_lim_theta: 0.6
+            min_turning_radius: 0.0
+            is_footprint_dynamic: False
+            footprint_model:
+                type: "polygon"
+                vertices: "[ [0.3, 0.2], [-0.3, 0.2], [-0.3, -0.2], [0.3, -0.2] ]"
+            free_goal_vel: False
+            min_obstacle_dist: 0.05
+            inflation_dist: 0.25
+            include_costmap_obstacles: True
+            costmap_obstacles_behind_robot_dist: 4.0
+            obstacle_poses_affected: 15
+            legacy_obstacle_association: false
+            obstacle_association_force_inclusion_factor: 20.0
+            obstacle_association_cutoff_factor: 100.0
+            dynamic_obstacle_inflation_dist: 0.3
+            include_dynamic_obstacles: True
+            costmap_converter_plugin: "costmap_converter::CostmapToPolygonsDBSMCCH"
+            costmap_converter_spin_thread: True
+            costmap_converter_rate: 10.0
+            no_inner_iterations: 5
+            no_outer_iterations: 4
+            optimization_activate: True
+            optimization_verbose: False
+            penalty_epsilon: 0.146
+            obstacle_cost_exponent: 0.65
+            weight_max_vel_x: 2.8
+            weight_max_vel_y: 1.2
+            weight_max_vel_theta: 0.8
+            weight_acc_lim_x: 1.5
+            weight_acc_lim_y: 1.2
+            weight_acc_lim_theta: 0.8
+            weight_kinematics_nh: 900.0
+            weight_kinematics_forward_drive: 6000.0
+            weight_optimaltime: 1000.0
+            weight_shortest_path: 10.0
+            weight_obstacle: 500.0
+            weight_inflation: 0.1
+            weight_dynamic_obstacle: 10.0
+            weight_dynamic_obstacle_inflation: 0.2
+            weight_viapoint: 1000.0
+            weight_adapt_factor: 2.0
+            enable_homotopy_class_planning: True
+            enable_multithreading: True
+            max_number_classes: 2
+            selection_cost_hysteresis: 5.0
+            selection_viapoint_cost_scale: 1.0
+            selection_obst_cost_scale: 1.0
+            selection_alternative_time_cost: True
+            roadmap_graph_samples: 15
+            roadmap_graph_area_width: 5.0
+            h_signature_prescaler: 0.5
+            h_signature_threshold: 0.1
+            obstacle_heading_threshold: 0.45
+            switching_blocking_period: 0.0
+            viapoints_all_candidates: True
+            shrink_horizon_backup: True
+            shrink_horizon_min_duration: 10.0
+            oscillation_recovery: True
+            oscillation_v_eps: 0.1
+            oscillation_omega_eps: 0.1
+            oscillation_recovery_min_duration: 10.0
+            oscillation_filter_duration: 10.0
+
+local_costmap:
+    local_costmap:
+        ros__parameters:
+            update_frequency: 30.0
+            publish_frequency: 30.0
+            global_frame: map
+            robot_base_frame: base_link
+            rolling_window: True
+            width: 8
+            height: 8
+            resolution: 0.05
+            robot_radius: 0.01
+            plugins: ["static_layer", "obstacle_layer", "denoise_layer", "inflation_layer", "custom_layer"]
+            static_layer:
+                plugin: "nav2_costmap_2d::StaticLayer"
+                map_subscribe_transient_local: True
+            obstacle_layer:
+                plugin: "nav2_costmap_2d::ObstacleLayer"
+                enabled: True
+                observation_sources: scan1
+                min_obstacle_height: -2.0
+                max_obstacle_height: 0.02
+                scan1:
+                    topic: "/cloud_obstacle"
+                    expected_update_rate: 30.0
+                    max_obstacle_height: 0.02
+                    min_obstacle_height: -2.0
+                    clearing: True
+                    marking: True
+                    data_type: "PointCloud2"
+                    raytrace_max_range: 10.0
+                    raytrace_min_range: 0.0
+                    obstacle_max_range: 10.0
+                    obstacle_min_range: 0.0
+            inflation_layer:
+                plugin: "nav2_costmap_2d::InflationLayer"
+                cost_scaling_factor: 5.0
+                inflation_radius: 0.6
+            custom_layer:
+                plugin: "nav2_custom_costmap_plugin::CustomLayer"
+                enabled: False
+                removed_area_1: "[ [ 3.47825, 6.1173 ], [ 2.76404, 7.75769 ], [ 2.74404, 7.75769 ], [ 3.45825, 6.1173 ] ]"
+                removed_area_2: "[ [ -5.56779, 8.88289 ], [ -5.58763, 9.85589 ], [ -5.59331, 10.9936 ], [ -5.61331, 10.9936 ], [ -5.60763, 9.85589 ], [ -5.58779, 8.88289 ] ]"
+                removed_area_3: "[ [ -1.95982, 12.8641 ], [ -2.76103, 14.3646 ], [ -2.78103, 14.3646 ], [ -1.97982, 12.8641 ] ]"
+                removed_area_4: "[ [ 6.35358, 12.0617 ], [ 6.4544, 11.3661 ], [ 6.42496, 9.76403 ], [ 6.40496, 9.76403 ], [ 6.4344, 11.3661 ], [ 6.33358, 12.0617 ] ]"
+            denoise_layer:
+                plugin: "nav2_costmap_2d::DenoiseLayer"
+                enabled: True
+                minimal_group_size: 2
+                group_connectivity_type: 8
+            always_send_full_costmap: True
+
+global_costmap:
+    global_costmap:
+        ros__parameters:
+            update_frequency: 30.0
+            publish_frequency: 30.0
+            global_frame: map
+            robot_base_frame: base_link
+            footprint: "[ [0.25, 0.13], [-0.25, 0.13], [-0.25, -0.13], [0.25, -0.13] ]"
+            resolution: 0.05
+            track_unknown_space: true
+            plugins: ["static_layer", "obstacle_layer", "denoise_layer", "inflation_layer", "custom_layer"]
+            static_layer:
+                plugin: "nav2_costmap_2d::StaticLayer"
+                map_subscribe_transient_local: True
+            obstacle_layer:
+                plugin: "nav2_costmap_2d::ObstacleLayer"
+                enabled: True
+                observation_sources: scan1
+                min_obstacle_height: -2.0
+                max_obstacle_height: 0.02
+                scan1:
+                    topic: "/cloud_obstacle"
+                    expected_update_rate: 30.0
+                    max_obstacle_height: 0.02
+                    min_obstacle_height: -2.0
+                    clearing: True
+                    marking: True
+                    data_type: "PointCloud2"
+                    raytrace_max_range: 10.0
+                    raytrace_min_range: 0.0
+                    obstacle_max_range: 10.0
+                    obstacle_min_range: 0.0
+            inflation_layer:
+                plugin: "nav2_costmap_2d::InflationLayer"
+                cost_scaling_factor: 5.0
+                inflation_radius: 0.6
+            custom_layer:
+                plugin: "nav2_custom_costmap_plugin::CustomLayer"
+                enabled: True
+                removed_area_1: "[ [ 3.47825, 6.1173 ], [ 2.76404, 7.75769 ], [ 2.74404, 7.75769 ], [ 3.45825, 6.1173 ] ]"
+                removed_area_2: "[ [ -5.56779, 8.88289 ], [ -5.58763, 9.85589 ], [ -5.59331, 10.9936 ], [ -5.61331, 10.9936 ], [ -5.60763, 9.85589 ], [ -5.58779, 8.88289 ] ]"
+                removed_area_3: "[ [ -1.95982, 12.8641 ], [ -2.76103, 14.3646 ], [ -2.78103, 14.3646 ], [ -1.97982, 12.8641 ] ]"
+                removed_area_4: "[ [ 6.35358, 12.0617 ], [ 6.4544, 11.3661 ], [ 6.42496, 9.76403 ], [ 6.40496, 9.76403 ], [ 6.4344, 11.3661 ], [ 6.33358, 12.0617 ] ]"
+            denoise_layer:
+                plugin: "nav2_costmap_2d::DenoiseLayer"
+                enabled: True
+                minimal_group_size: 2
+                group_connectivity_type: 8
+            always_send_full_costmap: True
+
+planner_server:
+    ros__parameters:
+        expected_planner_frequency: 30.0
+        planner_plugins: ["GridBased"]
+        GridBased:
+            plugin: "nav2_navfn_planner/NavfnPlanner"
+            tolerance: 0.5
+            use_astar: true
+            allow_unknown: true
+            use_final_approach_orientation: true
+
+smoother_server:
+    ros__parameters:
+        smoother_plugins: ["simple_smoother"]
+        simple_smoother:
+            plugin: "nav2_smoother::SimpleSmoother"
+            tolerance: 1.0e-10
+            max_its: 1000
+            do_refinement: True
+
+behavior_server:
+    ros__parameters:
+        point_topic: "/cloud_obstacle"
+        cycle_frequency: 50.0
+        behavior_plugins: ["keep_away_from_obstacles"]
+        robot_radius: 0.3
+        keep_away_from_obstacles:
+            plugin: "nav2_behaviors/KeepAwayFromObstacles"
+        global_frame: map
+        robot_base_frame: base_link
+        transform_tolerance: 0.1
+
+waypoint_follower:
+    ros__parameters:
+        loop_rate: 50
+        stop_on_failure: false
+        waypoint_task_executor_plugin: "wait_at_waypoint"
+        wait_at_waypoint:
+            plugin: "nav2_waypoint_follower::WaitAtWaypoint"
+            enabled: True
+            waypoint_pause_duration: 200
+
+velocity_smoother:
+    ros__parameters:
+        smoothing_frequency: 50.0
+        scale_velocities: True
+        feedback: "OPEN_LOOP"
+        max_velocity: [30.0, 30.0, 30.0]
+        min_velocity: [-30.0, -30.0, -30.0]
+        max_accel: [10.0, 10.0, 200.0]
+        max_decel: [-10.0, -10.0, -200.0]
+        odom_topic: "/Odometry"
+        odom_duration: 0.02
+        deadband_velocity: [0.0, 0.0, 0.0]
+        velocity_timeout: 1.0
+
+obstacle_segmentation:
+    ros__parameters:
+        obstacle_cloud_topic: "/cloud_obstacle"
+        input_cloud_topic: "/points_raw"
+        max_distance: 8.0
+        min_distance: 0.3
+        cluster_tolerance: 0.1
+        min_cluster_size: 10
+        max_cluster_size: 10000
+
+navigation_manager:
+    ros__parameters:
+        target_point:
+            x: 0.0
+            y: 0.0
+            z: 0.0

@@ -1,0 +1,31 @@
+#ifndef ROBOT_SERIAL_SENTRY_MSG_H
+#define ROBOT_SERIAL_SENTRY_MSG_H
+
+#include "rm_interfaces/msg/action.hpp"
+#include "rm_interfaces/msg/decision.hpp"
+#include "rm_interfaces/msg/info.hpp"
+#include "rm_interfaces/msg/map.hpp"
+#include "rm_interfaces/msg/velocity.hpp"
+#include "rm_interfaces/msg/buff.hpp"
+#include "rm_interfaces/msg/dartinfo.hpp"
+#include "rm_interfaces/msg/event.hpp"
+#include "rm_interfaces/msg/gamestatus.hpp"
+#include "rm_interfaces/msg/hp.hpp"
+#include "rm_interfaces/msg/interaction.hpp"
+#include "rm_interfaces/msg/mapcommand.hpp"
+#include "rm_interfaces/msg/projectileallowance.hpp"
+#include "rm_interfaces/msg/hurt_data.hpp"
+#include "rm_interfaces/msg/rfidstatus.hpp"
+#include "rm_interfaces/msg/robotp.hpp"
+#include "rm_interfaces/msg/robotposition.hpp"
+#include "rm_interfaces/msg/robotstatus.hpp"
+#include "rm_interfaces/msg/sentryinfo.hpp"
+#include "rm_interfaces/msg/self_position.hpp"
+#include "rm_interfaces/msg/enemy_position.hpp"
+#include "rm_interfaces/msg/enemy_positions.hpp"
+#include "rm_interfaces/msg/lidarposition.hpp"
+#include "rm_interfaces/msg/lidarstation.hpp"
+#include "rm_interfaces/msg/whitelist.hpp"
+#include "rm_interfaces/msg/angle_error.hpp"
+
+#endif //ROBOT_SERIAL_SENTRY_MSG_H

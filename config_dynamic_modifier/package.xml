@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>config_dynamic_modifier</name>
+  <version>0.0.1</version>
+  <description>基于ROS2的动态配置修改节点，通过RViz2点选实现costmap区域参数的自动化编辑和写入。</description>
+  <maintainer email="autism2484684043@163.com">cmyhj</maintainer>
+  <license>Apache License 2.0</license>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+
+  <depend>rclcpp</depend>
+  <depend>geometry_msgs</depend>
+  <depend>std_msgs</depend>
+  <depend>nav2_util</depend>
+
+  <test_depend>ament_lint_auto</test_depend>
+  <test_depend>ament_lint_common</test_depend>
+
+  <build_depend>rviz_common</build_depend>
+  <exec_depend>rviz_common</exec_depend>
+  <build_depend>rviz_default_plugins</build_depend>
+  <exec_depend>rviz_default_plugins</exec_depend>
+  <build_depend>qtbase5-dev</build_depend>
+  <exec_depend>qtbase5-dev</exec_depend>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+</package> 
