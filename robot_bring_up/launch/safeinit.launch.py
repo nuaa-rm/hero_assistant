@@ -101,12 +101,6 @@ def generate_launch_description():
         condition=IfCondition(param_launch_rviz),
     )
 
-    origin2map = Node(
-        package='tf2_ros',
-        executable='static_transform_publisher',
-        name='RMmap_origin2map_broadcaster',
-        arguments=['0', '0', '0', '0', '0', '0','1',  'origin', 'map']
-    )
 
     livox_to_body = Node(
         package='tf2_ros',
@@ -115,18 +109,10 @@ def generate_launch_description():
         arguments=['0', '0', '0', '0', '0', '0', '1', 'base_link', 'livox_frame']
     )
 
-    odom_to_base_link = Node(
-        package='tf2_ros',
-        executable='static_transform_publisher',
-        name='odom_to_base_link_broadcaster',
-        arguments=['0', '0', '0', '0', '0', '0', '1', 'odom', 'base_link']
-    )
 
     list = [
         livox_driver_launch,
-        origin2map,
         livox_to_body,
-        odom_to_base_link,
         declare_launch_gazebo,
         declare_yaml_path,
         declare_launch_rviz,

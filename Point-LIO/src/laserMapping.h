@@ -47,7 +47,7 @@
 #include <std_msgs/msg/bool.hpp>
 
 #include "rm_interfaces/msg/self_position.hpp"
-#include "rm_interfaces/msg/angle_error.hpp"
+// #include "rm_interfaces/msg/angle_error.hpp"
 
 #include <message_filters/synchronizer.h>
 #include <message_filters/sync_policies/approximate_time.h>
@@ -262,7 +262,7 @@ private:
      * @brief 角度误差回调函数
      *
      */
-    void angle_error_callback(const rm_interfaces::msg::AngleError::ConstPtr &msg);
+    // void angle_error_callback(const rm_interfaces::msg::AngleError::ConstPtr &msg);
 
     //初始化发布者和订阅者
     rclcpp::CallbackGroup::SharedPtr callback_group_;

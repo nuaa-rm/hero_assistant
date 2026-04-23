@@ -36,7 +36,7 @@ LaserMappingNode::LaserMappingNode(const rclcpp::NodeOptions &options) : Node("l
 {
     RCLCPP_INFO(this->get_logger(), "laser_mapping node created");
     readParameters();
-    
+
     // 初始化点云数据结构
     feats_undistort.reset(new PointCloudXYZI());
     feats_down_body_space.reset(new PointCloudXYZI());
@@ -118,11 +118,11 @@ LaserMappingNode::LaserMappingNode(const rclcpp::NodeOptions &options) : Node("l
     // 创建IMU订阅者
     sub_imu = this->create_subscription<sensor_msgs::msg::Imu>(imu_topic, 200000,
         std::bind(&LaserMappingNode::imu_cbk, this, std::placeholders::_1));
-    
+
     // 创建其他订阅者
     sub_is_we_are_blue_= this->create_subscription<std_msgs::msg::Bool>("/is_we_are_blue", 1000,
        std::bind(&LaserMappingNode::is_we_are_blue_cbk, this, std::placeholders::_1), sub_option);
-    
+
     // 创建发布者
     pubLaserCloudFull = this->create_publisher<sensor_msgs::msg::PointCloud2>("/cloud_registered", 100000);
     pubLaserCloudFull_body = this->create_publisher<sensor_msgs::msg::PointCloud2>("/cloud_registered_body", 100000);
@@ -367,6 +367,7 @@ void LaserMappingNode::readParameters()
     this->get_parameter_or<vector<double> >("init_pos.initial_rot_blue", initial_rot_blue_,
                                             vector<double>{0.0, 0.0, 0.0, 1.0});
     this->get_parameter_or<std::string>("point_frame_id", point_frame_id_, "livox_192_168_1_104");
+
 }
 
 void LaserMappingNode::map_publish_callback()
@@ -1102,7 +1103,7 @@ void LaserMappingNode::set_posestamp(T& out) {
 void LaserMappingNode::publish_odometry(const rclcpp::Publisher<nav_msgs::msg::Odometry>::SharedPtr pubOdomAftMapped, std::unique_ptr<tf2_ros::TransformBroadcaster> & tf_br)
 {
     odomAftMapped.header.frame_id = "map";
-    odomAftMapped.child_frame_id = "lidar_base_link";//odom_frame; 云台
+    odomAftMapped.child_frame_id = odom_frame; //云台
     if (publish_odometry_without_downsample)
     {
         odomAftMapped.header.stamp = get_ros_time(time_current); //每个点都发一个tf
