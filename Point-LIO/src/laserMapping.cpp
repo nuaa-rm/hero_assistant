@@ -1102,7 +1102,7 @@ void LaserMappingNode::set_posestamp(T& out) {
  */
 void LaserMappingNode::publish_odometry(const rclcpp::Publisher<nav_msgs::msg::Odometry>::SharedPtr pubOdomAftMapped, std::unique_ptr<tf2_ros::TransformBroadcaster> & tf_br)
 {
-    odomAftMapped.header.frame_id = "map";
+    odomAftMapped.header.frame_id = map_frame;
     odomAftMapped.child_frame_id = odom_frame; //云台
     if (publish_odometry_without_downsample)
     {

@@ -63,7 +63,7 @@ bt_navigator:
     # nav2_bt_navigator/navigate_through_poses_w_replanning_and_recovery.xml
     # They can be set here or via a RewrittenYaml remap from a parent launch file to Nav2.
     plugin_lib_names:
-      - nav2_keep_away_from_obstacles_action_bt_node
+      # - nav2_keep_away_from_obstacles_action_bt_node
       - nav2_compute_path_to_pose_action_bt_node
       - nav2_compute_path_through_poses_action_bt_node
       - nav2_follow_path_action_bt_node
@@ -75,7 +75,6 @@ bt_navigator:
       - nav2_round_robin_node_bt_node
       - nav2_single_trigger_bt_node
       - nav2_remove_passed_goals_action_bt_node
-      - nav2_truncate_path_action_bt_node
 
 laser_mapping:
   ros__parameters:
@@ -90,7 +89,7 @@ laser_mapping:
       cut_frame_time_interval: 0.1 # should be integral fraction of 1 / LiDAR frequency
       time_lag_imu_to_lidar: 0.0 # Time offset between LiDAR and IMU calibrated by other algorithms, e.g., LI-Init (find in Readme)
       # the timesample of IMU is transferred from the current timeline to LiDAR's timeline by subtracting this value
-      map_frame: "map"
+      map_frame: "odom"
       odom_frame: "base_link"
 
     preprocess:
@@ -135,7 +134,7 @@ laser_mapping:
       scan_bodyframe_pub_en: true
 
     pcd_save:
-      use_pcd_map_: true #map1前false ,map3 true
+      use_pcd_map_: false #map1前false ,map3 true
       prior_PCD_map_path_red: "/home/tc/Desktop/auto_sentry2025/src/auto_sentry2025/Point-LIO/PCD/2025_07_27_17_07_57_8.pcd" #map3 重命名和路径 checklist
       prior_PCD_map_path_blue: "/home/tc/Desktop/auto_sentry2025/src/auto_sentry2025/Point-LIO/PCD/2025_07_27_17_07_57_1.pcd" #map3 重命名和路径 checklist
       pcd_save_en: false #map1前true  ,map3 false
@@ -339,7 +338,7 @@ local_costmap:
           "obstacle_layer",
           "denoise_layer",
           "inflation_layer",
-          "custom_layer",
+          # "custom_layer",
         ]
       static_layer:
         plugin: "nav2_costmap_2d::StaticLayer"
@@ -349,11 +348,11 @@ local_costmap:
         enabled: True
         observation_sources: scan1
         min_obstacle_height: -2.0
-        max_obstacle_height: 0.02
+        max_obstacle_height: 2.0
         scan1:
           topic: "/cloud_obstacle"
           expected_update_rate: 30.0
-          max_obstacle_height: 0.02 # 障碍物最大高度
+          max_obstacle_height: 2.0 # 障碍物最大高度
           min_obstacle_height: -2.0 # 障碍物最小高度
           clearing: True
           marking: True
@@ -366,13 +365,13 @@ local_costmap:
         plugin: "nav2_costmap_2d::InflationLayer"
         cost_scaling_factor: 5.0
         inflation_radius: 0.6
-      custom_layer:
-        plugin: "nav2_custom_costmap_plugin::CustomLayer"
-        enabled: False
-        removed_area_1: "[ [ 2.77883, 7.98289 ], [ 3.31415, 6.29811 ], [ 3.29415, 6.29811 ], [ 2.75883, 7.98289 ] ]" #map系坐标
-        removed_area_2: "[ [ -5.55755, 10.7086 ], [ -5.50706, 9.04566 ], [ -5.50832, 8.66972 ], [ -5.52832, 8.66972 ], [ -5.52706, 9.04566 ], [ -5.57755, 10.7086 ] ]"
-        removed_area_3: "[ [ -2.01609, 12.7895 ], [ -2.55775, 14.3335 ], [ -2.57775, 14.3335 ], [ -2.03609, 12.7895 ] ]"
-        removed_area_4: "[ [ 6.39766, 10.0603 ], [ 6.34522, 11.3317 ], [ 6.28236, 12.0238 ], [ 6.26236, 12.0238 ], [ 6.32522, 11.3317 ], [ 6.37766, 10.0603 ] ]"
+      # custom_layer:
+      #   plugin: "nav2_custom_costmap_plugin::CustomLayer"
+      #   enabled: False
+      #   removed_area_1: "[ [ 2.77883, 7.98289 ], [ 3.31415, 6.29811 ], [ 3.29415, 6.29811 ], [ 2.75883, 7.98289 ] ]" #map系坐标
+      #   removed_area_2: "[ [ -5.55755, 10.7086 ], [ -5.50706, 9.04566 ], [ -5.50832, 8.66972 ], [ -5.52832, 8.66972 ], [ -5.52706, 9.04566 ], [ -5.57755, 10.7086 ] ]"
+      #   removed_area_3: "[ [ -2.01609, 12.7895 ], [ -2.55775, 14.3335 ], [ -2.57775, 14.3335 ], [ -2.03609, 12.7895 ] ]"
+      #   removed_area_4: "[ [ 6.39766, 10.0603 ], [ 6.34522, 11.3317 ], [ 6.28236, 12.0238 ], [ 6.26236, 12.0238 ], [ 6.32522, 11.3317 ], [ 6.37766, 10.0603 ] ]"
       denoise_layer:
         plugin: "nav2_costmap_2d::DenoiseLayer"
         enabled: True
@@ -397,7 +396,7 @@ global_costmap:
           "obstacle_layer",
           "denoise_layer",
           "inflation_layer",
-          "custom_layer",
+          # "custom_layer",
         ]
       static_layer:
         plugin: "nav2_costmap_2d::StaticLayer"
@@ -407,11 +406,11 @@ global_costmap:
         enabled: True
         observation_sources: scan1
         min_obstacle_height: -2.0
-        max_obstacle_height: 0.02
+        max_obstacle_height: 2.0
         scan1:
           topic: "/cloud_obstacle"
           expected_update_rate: 30.0
-          max_obstacle_height: 0.02 # 障碍物最大高度
+          max_obstacle_height: 2.0 # 障碍物最大高度
           min_obstacle_height: -2.0 # 障碍物最小高度
           clearing: True
           marking: True
@@ -424,13 +423,13 @@ global_costmap:
         plugin: "nav2_costmap_2d::InflationLayer"
         cost_scaling_factor: 5.0
         inflation_radius: 0.6
-      custom_layer:
-        plugin: "nav2_custom_costmap_plugin::CustomLayer"
-        enabled: True
-        removed_area_1: "[ [ 2.77883, 7.98289 ], [ 3.31415, 6.29811 ], [ 3.29415, 6.29811 ], [ 2.75883, 7.98289 ] ]" #map系坐标
-        removed_area_2: "[ [ -5.55755, 10.7086 ], [ -5.50706, 9.04566 ], [ -5.50832, 8.66972 ], [ -5.52832, 8.66972 ], [ -5.52706, 9.04566 ], [ -5.57755, 10.7086 ] ]"
-        removed_area_3: "[ [ -2.01609, 12.7895 ], [ -2.55775, 14.3335 ], [ -2.57775, 14.3335 ], [ -2.03609, 12.7895 ] ]"
-        removed_area_4: "[ [ 6.39766, 10.0603 ], [ 6.34522, 11.3317 ], [ 6.28236, 12.0238 ], [ 6.26236, 12.0238 ], [ 6.32522, 11.3317 ], [ 6.37766, 10.0603 ] ]"
+      # custom_layer:
+      #   plugin: "nav2_custom_costmap_plugin::CustomLayer"
+      #   enabled: True
+      #   removed_area_1: "[ [ 2.77883, 7.98289 ], [ 3.31415, 6.29811 ], [ 3.29415, 6.29811 ], [ 2.75883, 7.98289 ] ]" #map系坐标
+      #   removed_area_2: "[ [ -5.55755, 10.7086 ], [ -5.50706, 9.04566 ], [ -5.50832, 8.66972 ], [ -5.52832, 8.66972 ], [ -5.52706, 9.04566 ], [ -5.57755, 10.7086 ] ]"
+      #   removed_area_3: "[ [ -2.01609, 12.7895 ], [ -2.55775, 14.3335 ], [ -2.57775, 14.3335 ], [ -2.03609, 12.7895 ] ]"
+      #   removed_area_4: "[ [ 6.39766, 10.0603 ], [ 6.34522, 11.3317 ], [ 6.28236, 12.0238 ], [ 6.26236, 12.0238 ], [ 6.32522, 11.3317 ], [ 6.37766, 10.0603 ] ]"
       denoise_layer:
         plugin: "nav2_costmap_2d::DenoiseLayer"
         enabled: True
@@ -494,31 +493,6 @@ velocity_smoother:
     deadband_velocity: [0.0, 0.0, 0.0]
     velocity_timeout: 1.0
 
-point_cloud_registration_node:
-  ros__parameters:
-    use_sim_time: true
-    global_frame_id: map
-    odom_frame_id: aligned_map
-    registration_method: "NDT_OMP" # "NDT"或"GICP"或"NDT_OMP"或"GICP_OMP"
-    point_topic: "/cloud_registered_body" # 订阅点云的话题，如果点云不在odom坐标系下，会进行坐标变换，如果点云在odom坐标系下，不进行坐标变换
-    transform_epsilon: 0.01 # 变换中的小量用于停止匹配迭代
-    stamp_epsilon: 0.1 # tf变换和点云时间戳之间的最大差异，单位为秒，超过此值的点云将被丢弃，不进行匹配
-    # score_threshold: 2.0 # 分数阈值
-    ndt_resolution: 1.0 # NDT分辨率
-    ndt_step_size: 0.2 # NDT步长
-    ndt_num_threads: 0 # NDT线程数 0为使用最大允许线程数
-    use_voxel_grid_filter: false # 是否使用点云下采样，即使为false，ICP算法也会在读取pcd时进行下采样，只是不会在订阅点云时进行下采样
-    voxel_leaf_size: 0.1 # 输入点云的下采样大小
-    pcd_path: "/home/tc/Desktop/auto_sentry2025/src/auto_sentry2025/Point-LIO/PCD/RMUC/2025_05_18_23_54_52_merged.pcd"
-    initial_trans: [0.0, 0.0, 0.0] # 初始位姿
-    initial_rot: [0.0, 0.0, 0.0, 1.0] # 初始四元数
-    scan_range:
-      min_x: -100.0
-      max_x: 100.0
-      min_y: -100.0
-      max_y: 100.0
-      min_z: -100.0
-      max_z: 100.0
 
 navigation_manager:
   ros__parameters:
