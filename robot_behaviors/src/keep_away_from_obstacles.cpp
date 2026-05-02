@@ -1,7 +1,7 @@
 #include <chrono>
 #include <memory>
 
-#include "robot_behaviors/plugins/keep_away_from_obstacles.hpp"
+#include "keep_away_from_obstacles.hpp"
 #include <nav2_util/node_utils.hpp>
 #include <pcl_conversions/pcl_conversions.h>
 

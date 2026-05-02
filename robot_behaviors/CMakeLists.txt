@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.5)
 project(robot_behaviors)
 
+# Find dependencies
 find_package(ament_cmake REQUIRED)
 find_package(nav2_common REQUIRED)
 find_package(rclcpp REQUIRED)
@@ -24,13 +25,13 @@ find_package(pcl_ros REQUIRED)
 
 nav2_package()
 
-include_directories(
-  include
-)
+include_directories(include)
 
+# Define names
 set(library_name behavior_server_core)
 set(executable_name behavior_server)
 
+# Dependencies list
 set(dependencies
   rclcpp
   rclcpp_action
@@ -52,42 +53,44 @@ set(dependencies
   pcl_ros
 )
 
-# plugins
+# Plugin libraries
+set(plugin_libs
+  nav2_keep_away_from_obstacles_behavior
+  nav2_keep_away_from_obstacles_action_bt_node
+)
+
 add_library(nav2_keep_away_from_obstacles_behavior SHARED
-  plugins/keep_away_from_obstacles.cpp
+  src/keep_away_from_obstacles.cpp
 )
-ament_target_dependencies(nav2_keep_away_from_obstacles_behavior
-${dependencies}
+
+add_library(nav2_keep_away_from_obstacles_action_bt_node SHARED 
+  src/keep_away_from_obstacles_action.cpp
 )
-add_library(nav2_keep_away_from_obstacles_action_bt_node SHARED src/keep_away_from_obstacles_action.cpp)
-list(APPEND plugin_libs nav2_keep_away_from_obstacles_action_bt_node)
+
+foreach(plugin ${plugin_libs})
+  ament_target_dependencies(${plugin} ${dependencies})
+  target_compile_definitions(${plugin} PRIVATE BT_PLUGIN_EXPORT)
+endforeach()
 
 pluginlib_export_plugin_description_file(nav2_core behavior_plugin.xml)
 
-# Library
+# Core library
 add_library(${library_name} SHARED
   src/behavior_server.cpp
 )
-
-ament_target_dependencies(${library_name}
-  ${dependencies}
-)
+ament_target_dependencies(${library_name} ${dependencies})
 
 # Executable
-add_executable(${executable_name}
-  src/main.cpp
-)
-
+add_executable(${executable_name} src/main.cpp)
 target_link_libraries(${executable_name} ${library_name})
-
-ament_target_dependencies(${executable_name}
-  ${dependencies}
-)
+ament_target_dependencies(${executable_name} ${dependencies})
 
 rclcpp_components_register_nodes(${library_name} "behavior_server::BehaviorServer")
 
-install(TARGETS ${library_name}
-                nav2_keep_away_from_obstacles_behavior
+# Install targets
+install(TARGETS 
+    ${library_name}
+    ${plugin_libs}
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
   RUNTIME DESTINATION bin
@@ -105,21 +108,9 @@ install(FILES behavior_plugin.xml
   DESTINATION share/${PROJECT_NAME}
 )
 
-install(DIRECTORY plugins/
-  DESTINATION share/${PROJECT_NAME}/plugins/
-)
-
-
-# if(BUILD_TESTING)
-#   find_package(ament_lint_auto REQUIRED)
-#   ament_lint_auto_find_test_dependencies()
-#   find_package(ament_cmake_gtest REQUIRED)
-#   add_subdirectory(test)
-# endif()
-
+# Export
 ament_export_include_directories(include)
-ament_export_libraries(${library_name}
-  nav2_keep_away_from_obstacles_behavior
-)
+ament_export_libraries(${library_name} ${plugin_libs})
 ament_export_dependencies(${dependencies})
+
 ament_package()

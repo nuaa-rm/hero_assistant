@@ -1,4 +1,4 @@
-#include "include/robot_behaviors/plugins/keep_away_from_obstacles_action.hpp"
+#include "keep_away_from_obstacles_action.hpp"
 
 
 namespace nav2_behavior_tree
