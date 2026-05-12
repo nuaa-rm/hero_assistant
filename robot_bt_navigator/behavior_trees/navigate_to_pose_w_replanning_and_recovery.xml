@@ -12,7 +12,6 @@
                     <RecoveryNode number_of_retries="1" name="ComputePathToPose">
                         <ReactiveSequence name="ReactiveSequence">
                             <ComputePathToPose goal="{goal}" path="{path}" planner_id="GridBased"/>
-                            <TruncatePath input_path="{path}" output_path="{truncated_path}"/>
                         </ReactiveSequence>
                         <ClearEntireCostmap name="ClearGlobalCostmap-Context" service_name="global_costmap/clear_entirely_global_costmap"/>
                     </RecoveryNode>
