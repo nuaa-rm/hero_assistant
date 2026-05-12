@@ -462,7 +462,7 @@ behavior_server:
     point_topic: "/cloud_obstacle"
     cycle_frequency: 50.0
     behavior_plugins: ["keep_away_from_obstacles"]
-    robot_radius: 0.3
+    robot_radius: 0.5
     keep_away_from_obstacles:
       plugin: "nav2_behaviors/KeepAwayFromObstacles"
     global_frame: map

@@ -40,7 +40,7 @@ NavigateToPoseNavigator::configure(
     node->declare_parameter("path_blackboard_id", std::string("path"));
   }
 
-  path_blackboard_id_ = "truncated_path"; //node->get_parameter("path_blackboard_id").as_string();
+  // path_blackboard_id_ = "truncated_path"; //node->get_parameter("path_blackboard_id").as_string();
   RCLCPP_INFO(logger_, "------------>>>>>>>>>path_blackboard_id_: %s", path_blackboard_id_.c_str());
 
   // Odometry smoother object for getting current speed

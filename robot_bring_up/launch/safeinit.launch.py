@@ -112,7 +112,7 @@ def generate_launch_description():
         package='tf2_ros',
         executable='static_transform_publisher',
         name='livox2body_broadcaster',
-        arguments=['0', '0', '0', '0', '0', '0', '1', 'base_link', 'livox_frame']
+        arguments=['-0.023', '-0.158', '0.044', '0', '0', '0', '1', 'base_link', 'livox_frame']
     )
 
 
