@@ -298,7 +298,9 @@ obstacle_segmentation:
 
 navigation_manager:
     ros__parameters:
-        target_point:
+        target_point: # 目标点，对于hero_assistant,一般是敌方基地装甲板在global_frame下的坐标
             x: 0.0
             y: 0.0
             z: 0.0
+        global_frame: map
+        robot_base_frame: base_link

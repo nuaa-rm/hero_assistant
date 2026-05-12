@@ -20,34 +20,38 @@ public:
         this->declare_parameter("target_point.x", 0.0);
         this->declare_parameter("target_point.y", 0.0);
         this->declare_parameter("target_point.z", 0.0);
+        this->declare_parameter("global_frame", "map");
+        this->declare_parameter("robot_base_frame", "base_link");
         
         this->get_parameter("target_point.x", target_position_x_);
         this->get_parameter("target_point.y", target_position_y_);
         this->get_parameter("target_point.z", target_position_z_);
+        this->get_parameter("global_frame", global_frame_);
+        this->get_parameter("robot_base_frame", robot_base_frame_);
 
         recorded_position_x_ = 0.0;
         recorded_position_y_ = 0.0;
-        recorded_position_z_ = 0.0;
+        recorded_position_z_ = 0.0;//局内标记点
         current_robot_x_ = 0.0;
         current_robot_y_ = 0.0;
-        current_robot_z_ = 0.0;
+        current_robot_z_ = 0.0;//当前坐标
         has_recorded_position_ = false;
 
         tf_buffer_ = std::make_unique<tf2_ros::Buffer>(this->get_clock());
         tf_listener_ = std::make_shared<tf2_ros::TransformListener>(*tf_buffer_);
 
         navigation_command_sub_ = this->create_subscription<rm_interfaces::msg::NavigationCommand>(
-            "/robot/navigation_command",
+            "/robot/navigation_command",//下位机传上来的命令
             10,
             std::bind(&NavigationManager::navigationCommandCallback, this, std::placeholders::_1));
 
         robot_position_sub_ = this->create_subscription<rm_interfaces::msg::Robotp>(
-            "/robot/robotp",
+            "/robot/robotp",//裁判系统传上来的机器人位置
             10,
             std::bind(&NavigationManager::robotPositionCallback, this, std::placeholders::_1));
 
         distance_info_pub_ = this->create_publisher<rm_interfaces::msg::DistanceInfo>(
-            "/robot/distance_info",
+            "/robot/distance_info",//发布与目标点的距离至下位机
             10);
 
         client_ptr_ = rclcpp_action::create_client<nav2_msgs::action::NavigateToPose>(
@@ -64,11 +68,16 @@ public:
     }
 
 private:
+    /*
+     * @brief 处理下位机传上来的导航命令
+     * 
+     * @param msg 下位机传上来的导航命令
+     */
     void navigationCommandCallback(const rm_interfaces::msg::NavigationCommand::SharedPtr msg)
     {
         RCLCPP_INFO(this->get_logger(), "Received navigation command: %d", msg->command);
 
-        if (msg->command == 1)
+        if (msg->command == 1)//记录当前位置
         {
             recorded_position_x_ = current_robot_x_;
             recorded_position_y_ = current_robot_y_;
@@ -77,7 +86,7 @@ private:
             RCLCPP_INFO(this->get_logger(), "Position recorded: (%.2f, %.2f, %.2f)", 
                         recorded_position_x_, recorded_position_y_, recorded_position_z_);
         }
-        else if (msg->command == 2)
+        else if (msg->command == 2)//导航到记录位置
         {
             if (has_recorded_position_)
             {
@@ -88,26 +97,37 @@ private:
                 RCLCPP_WARN(this->get_logger(), "No position recorded yet!");
             }
         }
-        else if (msg->command == 3)
+        else if (msg->command == 3)//导航到赛前记录目标位置（一般为敌方装甲板位置）
         {
             sendNavigationGoal(target_position_x_, target_position_y_);
         }
     }
 
+    /*
+     * @brief 裁判系统传上来的机器人位置，暂时没有使用
+     * 
+     * @param msg 裁判系统传上来的机器人位置
+     */
     void robotPositionCallback(const rm_interfaces::msg::Robotp::SharedPtr msg)
     {
-        current_robot_x_ = msg->x;
-        current_robot_y_ = msg->y;
+        // current_robot_x_ = msg->x;
+        // current_robot_y_ = msg->y;
     }
 
+    /*
+     * @brief 从TFtree获取机器人机器人位置robot_base_frame,更新current_robot_
+     * 
+     * @param global_frame 全局坐标系
+     * @param robot_base_frame 机器人机器人坐标系
+     */
     void getRobotPositionFromTF()
     {
         try
         {
             geometry_msgs::msg::TransformStamped transform_stamped;
             transform_stamped = tf_buffer_->lookupTransform(
-                "map", 
-                "base_link", 
+                global_frame_, 
+                robot_base_frame_, 
                 tf2::TimePointZero);
 
             current_robot_x_ = transform_stamped.transform.translation.x;
@@ -120,6 +140,12 @@ private:
         }
     }
 
+    /*
+     * @brief 发送导航目标点TODO:未测试
+     * 
+     * @param x 目标点x坐标
+     * @param y 目标点y坐标
+     */
     void sendNavigationGoal(double x, double y)
     {
         if (!client_ptr_->wait_for_action_server(5s))
@@ -186,8 +212,11 @@ private:
                 return;
         }
     }
-
-    void updateDistanceInfo()
+    /*
+     * @brief 更新距离信息TODO:未测试
+     * 
+     */
+    void updateDistanceInfo()//更新距离信息
     {
         getRobotPositionFromTF();
 
@@ -197,16 +226,16 @@ private:
         float distance = sqrt(dx * dx + dy * dy);
 
         rm_interfaces::msg::DistanceInfo distance_info;
-        distance_info.header.stamp = this->now();
-        distance_info.current_x = current_robot_x_;
-        distance_info.current_y = current_robot_y_;
-        distance_info.current_z = current_robot_z_;
-        distance_info.target_x = target_position_x_;
-        distance_info.target_y = target_position_y_;
-        distance_info.target_z = target_position_z_;
+        // distance_info.header.stamp = this->now();
+        // distance_info.current_x = current_robot_x_;
+        // distance_info.current_y = current_robot_y_;
+        // distance_info.current_z = current_robot_z_;
+        // distance_info.target_x = target_position_x_;
+        // distance_info.target_y = target_position_y_;
+        // distance_info.target_z = target_position_z_;
         distance_info.distance = distance;
-        distance_info.height_diff = dz;
-        distance_info.arrived = distance < 0.5;
+        // distance_info.height_diff = dz;
+        // distance_info.arrived = distance < 0.5;
 
         distance_info_pub_->publish(distance_info);
     }
@@ -230,6 +259,8 @@ private:
     double current_robot_y_;
     double current_robot_z_;
     bool has_recorded_position_;
+    std::string global_frame_;
+    std::string robot_base_frame_;
 };
 
 int main(int argc, char ** argv)

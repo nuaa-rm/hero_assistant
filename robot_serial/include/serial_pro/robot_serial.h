@@ -34,14 +34,15 @@ private:
     rclcpp::Publisher<rm_interfaces::msg::Robotp>::SharedPtr RobotpPublisher;
     rclcpp::Publisher<rm_interfaces::msg::Robotstatus>::SharedPtr RobotstatusPublisher;
     rclcpp::Publisher<rm_interfaces::msg::SelfPosition>::SharedPtr SelfPositionPublisher;
-    rclcpp::Publisher<rm_interfaces::msg::DistanceInfo>::SharedPtr DistanceInfoPublisher;
 
+    
+    rclcpp::Subscription<rm_interfaces::msg::DistanceInfo>::SharedPtr DistanceInfoSubscription;
     rclcpp::Subscription<geometry_msgs::msg::Twist>::SharedPtr VelocitySubscription;
     rclcpp::Subscription<rm_interfaces::msg::NavigationCommand>::SharedPtr NavigationCommandSubscription;
 
     void velocityCallback(const geometry_msgs::msg::Twist::SharedPtr msg);
     void navigationCommandCallback(const rm_interfaces::msg::NavigationCommand::SharedPtr msg);
-    void updateDistanceInfo();
+    void distanceInfoCallback(const rm_interfaces::msg::DistanceInfo::SharedPtr msg);
     void timer_callback();
 
 public:

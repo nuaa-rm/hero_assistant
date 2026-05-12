@@ -10,13 +10,24 @@ void RobotSerial::velocityCallback(const geometry_msgs::msg::Twist::SharedPtr ms
     };
     SOF++;
     sentrySerial.write(0x0501, SOF, velocity);
-    RCLCPP_INFO(this->get_logger(), "%f %f %f", msg->linear.x, msg->linear.y, msg->angular.z);
+    // RCLCPP_INFO(this->get_logger(), "%f %f %f", msg->linear.x, msg->linear.y, msg->angular.z);
 }
 
+void RobotSerial::distanceInfoCallback(const rm_interfaces::msg::DistanceInfo::SharedPtr msg)
+{
+    static uint8_t SOF = 0x00;
+    DistanceInfo distance_info = {
+        (float)(msg->distance),
+    };
+    SOF++;
+    sentrySerial.write(0x0606, SOF, distance_info);
+    RCLCPP_INFO(this->get_logger(), "%f %d", msg->distance);
+}
 void RobotSerial::navigationCommandCallback(const rm_interfaces::msg::NavigationCommand::SharedPtr msg)
 {
     RCLCPP_INFO(this->get_logger(), "Received navigation command: %d, target_id: %d", msg->command, msg->target_id);
     
+    // 记录当前位置 
     if (msg->command == 1) {
         recorded_position_x_ = current_robot_x_;
         recorded_position_y_ = current_robot_y_;
@@ -32,23 +43,6 @@ void RobotSerial::navigationCommandCallback(const rm_interfaces::msg::Navigation
     }
 }
 
-void RobotSerial::updateDistanceInfo()
-{
-    float dx = target_position_x_ - current_robot_x_;
-    float dy = target_position_y_ - current_robot_y_;
-    float distance = sqrt(dx * dx + dy * dy);
-    
-    rm_interfaces::msg::DistanceInfo distance_info;
-    distance_info.header.stamp = this->now();
-    distance_info.current_x = current_robot_x_;
-    distance_info.current_y = current_robot_y_;
-    distance_info.target_x = target_position_x_;
-    distance_info.target_y = target_position_y_;
-    distance_info.distance = distance;
-    distance_info.arrived = distance < 0.5;
-    
-    DistanceInfoPublisher->publish(distance_info);
-}
 
 RobotSerial::RobotSerial() : Node("robot_serial_node")
 {
@@ -95,8 +89,11 @@ RobotSerial::RobotSerial() : Node("robot_serial_node")
     RobotpPublisher = create_publisher<rm_interfaces::msg::Robotp>("/robot/robotp", 1);
     RobotstatusPublisher = create_publisher<rm_interfaces::msg::Robotstatus>("/robot/robotstatus", 1);
     SelfPositionPublisher = create_publisher<rm_interfaces::msg::SelfPosition>("/SelfPosition", 1);
-    DistanceInfoPublisher = create_publisher<rm_interfaces::msg::DistanceInfo>("/robot/distance_info", 1);
-
+    
+    DistanceInfoSubscription = create_subscription<rm_interfaces::msg::DistanceInfo>("/robot/distance_info", 1,
+                                                                                              std::bind(&RobotSerial::distanceInfoCallback,
+                                                                                                  this,
+                                                                                                  std::placeholders::_1));
     VelocitySubscription = create_subscription<geometry_msgs::msg::Twist>("/cmd_vel", 1,
                                                                           std::bind(&RobotSerial::velocityCallback,
                                                                               this,
@@ -108,7 +105,6 @@ RobotSerial::RobotSerial() : Node("robot_serial_node")
 
     timer_ = this->create_wall_timer(period_ns, std::bind(&RobotSerial::timer_callback, this));
 
-    distance_timer_ = this->create_wall_timer(std::chrono::milliseconds(100), std::bind(&RobotSerial::updateDistanceInfo, this));
 
     sentrySerial.spin(true);
 }

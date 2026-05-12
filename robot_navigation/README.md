@@ -1,0 +1,2 @@
+参数在robot_bringup/config里
+全部坐标均建立在global_frame坐标系上

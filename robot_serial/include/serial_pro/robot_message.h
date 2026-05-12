@@ -23,6 +23,9 @@ message_data Action{ //0x0502
 message_data Whitelist{ //0x0506
     uint8_t whitelist[12];
 };
+message_data DistanceInfo{ //0x0606
+    float distance;
+};
 
 /* 接收和发送的裁判系统指令按裁判系统串口手册中的命令字来命名 */
 message_data game_status_t{ //0x0001
