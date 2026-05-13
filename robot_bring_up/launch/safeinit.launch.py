@@ -30,7 +30,7 @@ def generate_launch_description():
     param_yaml_path = LaunchConfiguration("params_file")
     declare_yaml_path = DeclareLaunchArgument(
         "params_file",
-        default_value=os.path.join(robot_bringup_path, "config", "safeinitblue.yaml"),
+        default_value=os.path.join(robot_bringup_path, "config", "safeinit.yaml"),
         description="Full path to the configuration file to load",
     )
     param_launch_rviz = LaunchConfiguration("launch_rviz", default=if_rviz)

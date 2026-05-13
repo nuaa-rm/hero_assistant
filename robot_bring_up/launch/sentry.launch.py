@@ -13,7 +13,7 @@ from launch.actions import TimerAction
 def generate_launch_description():
     if_rviz = True
     if_sim = False
-    if_map = False
+    if_map = False //map1 map3
 
     point_lio_path = get_package_share_directory("point_lio")
     robot_bringup_path = get_package_share_directory("robot_bring_up")

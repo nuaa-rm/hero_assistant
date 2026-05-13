@@ -1,168 +1,16 @@
-lidar_monitor_node:
-  ros__parameters:
-    lidar_topic_1: "/livox/lidar_192_168_1_187"
-    lidar_topic_2: "/livox/lidar_192_168_1_104"
-    imu_topic_1: "/livox/imu_192_168_1_187"
-    imu_topic_2: "/livox/imu_192_168_1_104"
-    livox_frame_id_1: "livox_192_168_1_187"
-    livox_frame_id_2: "livox_192_168_1_104"
-    output_lidar_topic: "/livox/lidar"
-    output_imu_topic: "/livox/imu"
-    lidar_1_dog: 20
-    lidar_2_dog: 20
-    frequency: 50.0
-
-pointcloud_merge_node:
-  ros__parameters:
-    lidar_topic_1: "/livox/lidar_192_168_1_187"
-    lidar_topic_2: "/livox/lidar_192_168_1_104"
-    OutPut_lidar_topic: "/livox/lidar"
-    use_voxel_grid_filter: true
-    voxel_leaf_size: 0.13
-    main_livox_frame_id: "livox_192_168_1_104"
-
-sentry_strategy_service:
-  ros__parameters:
-    aim_priority: ["1", "3", "4", "2", "sentry"]
-    if_default_chasing: true #checklist
 
 map_server:
   ros__parameters:
-    yaml_filename: "/home/tc/Desktop/auto_sentry2025/src/auto_sentry2025/robot_bring_up/maps/RMUC.yaml" #map3 重命名 checklist
-
-robot_bt_decision_maker_node:
-  ros__parameters:
-    loop_duration_in_millisec: 100
-    server_timeout_in_millisec: 1000
-    transform_tolerance: 0.2
-    is_we_are_blue: false # checklist
-    red_outpost_tunnel_x: [2.909172, 3.970356, 3.089191, 2.103793]
-    red_outpost_tunnel_y: [8.681598, 5.798121, 5.023131, 8.545533]
-    blue_outpost_tunnel_x: [-2.447278, -1.272390, -2.114531, -3.184315]
-    blue_outpost_tunnel_y: [15.017197, 12.222601, 11.618188, 14.658722]
-    red_banana_tunnel_x:
-      [-5.083842, -4.899343, -4.479029, -5.925897, -5.979346, -6.221775]
-    red_banana_tunnel_y:
-      [11.454240, 8.939246, 8.528648, 7.371799, 9.316884, 12.633493]
-    blue_banana_tunnel_x:
-      [6.946667, 5.838604, 5.777816, 5.311137, 6.715460, 6.892620]
-    blue_banana_tunnel_y:
-      [7.857435, 9.004011, 11.482098, 12.255121, 13.163218, 11.181226]
-    chasing_lower_limit: -0.4
-    chasing_higher_limit: 0.26
-    odom_frame_gimbal: "lidar_base_link"
-    odom_frame_chassis: "base_link"
-    dt_ref_gimbal: 0.6 #0.4
-    max_global_plan_lookahead_dist_gimbal: 1.6 #1.45
-    max_vel_x_gimbal: 3.0
-    max_vel_y_gimbal: 3.0
-    max_vel_x_backwards_gimbal: 3.0 #0.3
-    max_vel_theta_gimbal: 1.7 #3.0
-    acc_lim_x_gimbal: 6.0 #4.0
-    acc_lim_y_gimbal: 6.0 #4.0
-    acc_lim_theta_gimbal: 0.6 #5.0
-    dt_ref_chassis: 0.6
-    max_global_plan_lookahead_dist_chassis: 1.6
-    max_vel_x_chassis: 3.0
-    max_vel_y_chassis: 3.0
-    max_vel_x_backwards_chassis: 3.0
-    max_vel_theta_chassis: 1.7
-    acc_lim_x_chassis: 8.0
-    acc_lim_y_chassis: 8.0
-    acc_lim_theta_chassis: 0.6
-    dt_ref_spin: 0.4
-    max_global_plan_lookahead_dist_spin: 1.45
-    max_vel_x_spin: 2.7
-    max_vel_y_spin: 2.7
-    max_vel_x_backwards_spin: 2.7
-    max_vel_theta_spin: 3.0
-    acc_lim_x_spin: 4.0
-    acc_lim_y_spin: 4.0
-    acc_lim_theta_spin: 5.0
-    dafu_yaw_angle_blue: -2.53
-    dafu_yaw_angle_red: 0.61
-    bt_xml_filename: "/behavior_trees/RMUC_blue/RMUC_5_29_game_1.xml" #！！！！！！请在robot_bt_decision_maker.launch中修改默认值！！或在命令行中指定参数，例： bt_xml_filename:="/behavior_trees/RMUC_test/test.xml"
-    plugin_lib_names:
-      - nav2_keep_away_from_obstacles_action_bt_node
-      - nav2_record_robot_blood_action_bt_node
-      - nav2_record_robot_status_action_bt_node
-      - nav2_navigate_to_pose_action_bt_node
-      - nav2_buy_blood_action_bt_node
-      - nav2_buy_bullet_action_bt_node
-      - nav2_send_patrol_action_bt_node
-      - nav2_select_resurrection_action_bt_node
-      - nav2_buy_bullet_in_recovery_action_bt_node
-      - nav2_send_decision_action_bt_node
-      - nav2_printf_action_bt_node
-      - nav2_set_patrol_action_bt_node
-      - nav2_set_sentryinfo_action_bt_node
-      - nav2_send_sentryinfo_action_bt_node
-      - nav2_random_move_action_bt_node
-      - nav2_random_move_around_action_bt_node
-      - nav2_update_goal_action_bt_node
-      - nav2_send_to_autoaim_action_bt_node
-      - nav2_truncate_path_action_bt_node
-      - nav2_change_mode_action_bt_node
-      - nav2_follow_aim_action_bt_node
-      - nav2_set_whitelist_action_bt_node
-      - nav2_send_whitelist_action_bt_node
-      - nav2_set_blackboard_action_bt_node
-      - nav2_force_move_action_bt_node
-      - nav2_routine_patrol_action_bt_node
-      - nav2_change_map_action_bt_node
-      - nav2_wait_for_input_period_action_bt_node
-      - nav2_record_command_control_action_bt_node
-      - nav2_record_autoaim_action_bt_node
-      - nav2_get_out_of_stuck_action_bt_node
-      - nav2_force_quit_command_action_bt_node
-      - nav2_record_passing_tunnel_index_action_bt_node
-      - nav2_change_patrol_pitch_action_bt_node
-      - nav2_set_gimbal_patrol_action_bt_node
-      - nav2_set_spin_action_bt_node
-      - nav2_set_aim_mode_action_bt_node
-      - nav2_if_coin_more_than_input_condition_bt_node
-      - nav2_is_rfid_in_recovery_condition_bt_node
-      - nav2_is_rfid_in_fort_condition_bt_node
-      - nav2_is_rfid_in_center_condition_bt_node
-      - nav2_if_allowance_shoot_less_than_input_condition_bt_node
-      - nav2_is_out_fight_condition_bt_node
-      - nav2_wait_for_game_start_condition_bt_node
-      - nav2_if_in_command_condition_bt_node
-      - nav2_if_cancel_resurrection_condition_bt_node
-      - nav2_if_remain_time_in_input_condition_bt_node
-      - nav2_if_appoint_robot_blood_less_than_input_condition_bt_node
-      - nav2_if_in_ramp_condition_bt_node
-      - nav2_is_sentry_hurt_condition_bt_node
-      - nav2_goal_updated_condition_bt_node
-      - nav2_goal_updater_node_bt_node
-      - nav2_is_goal_update_condition_bt_node
-      - nav2_is_tunnel_dangerous_condition_bt_node
-      - nav2_is_our_dart_hit_condition_bt_node
-      - nav2_is_enemy_dart_hit_condition_bt_node
-      - nav2_is_robot_in_weak_condition_bt_node
-      - nav2_if_recovery_bullet_less_than_input_condition_bt_node
-      - nav2_if_appoint_robot_in_target_area_condition_bt_node
-      - nav2_if_select_go_fort_condition_bt_node
-      - nav2_if_mode_change_condition_bt_node
-      - nav2_is_goal_reached_condition_bt_node
-      - nav2_if_robot_stuck_condition_bt_node
-      - nav2_if_robot_referee_offline_condition_bt_node
-      - nav2_if_in_chase_condition_bt_node
-      - nav2_if_in_dafu_status_condition_bt_node
-      - nav2_user_force_success_decorator_bt_node
-      - nav2_user_force_failure_decorator_bt_node
-robot_bt_decision_maker_node_rclcpp_node:
-  ros__parameters:
-    goal_reached_tol: 0.3 # 允许到目标位置的最终x和y的偏差（以米为单位），不考虑角度差
+    yaml_filename: "/home/tc/Desktop/hero_assistant_test/src/hero_assistant/robot_bring_up/maps/3502.yaml" #map3 重命名 checklist
 
 ## PCD转二维栅格地图 map3
 pcd2pgm_node:
   ros__parameters: # map2 修改路径和名称
-    pcd_path: "/home/tc/Desktop/auto_sentry2025/src/auto_sentry2025/Point-LIO/PCD" # 点云路径
-    pcd_name: "RMUC.pcd"
-    map_path: "/home/tc/Desktop/auto_sentry2025/src/auto_sentry2025/robot_bring_up/maps"
-    map_name: "RMUC.png"
-    yaml_name: "RMUC.yaml"
+    pcd_path: "/home/tc/Desktop/hero_assistant_test/src/hero_assistant/Point-LIO/PCD" # 点云路径
+    pcd_name: "2026_05_13_13_43_36_1.pcd"
+    map_path: "/home/tc/Desktop/hero_assistant_test/src/hero_assistant/robot_bring_up/maps"
+    map_name: "3502.png"
+    yaml_name: "3502.yaml"
 
     method: "point" # normal、height或者point，代表不同的转换方法
     thre_x_min: -50.0 # 点云范围
@@ -227,14 +75,13 @@ bt_navigator:
       - nav2_round_robin_node_bt_node
       - nav2_single_trigger_bt_node
       - nav2_remove_passed_goals_action_bt_node
-      - nav2_truncate_path_action_bt_node
 
 laser_mapping:
   ros__parameters:
     common:
-      lid_topic: "/livox/lidar"
+      lid_topic: "/livox/lidar_192_168_2_104"
       # imu_topic:  "/imu/data"  #from imu_complementary_filter
-      imu_topic: "/livox/imu"
+      imu_topic: "/livox/imu_192_168_2_104"
       odom_topic: "/Odometry"
       con_frame: false # true: if you need to combine several LiDAR frames into one
       con_frame_num: 2 # the number of frames combined
@@ -242,8 +89,8 @@ laser_mapping:
       cut_frame_time_interval: 0.1 # should be integral fraction of 1 / LiDAR frequency
       time_lag_imu_to_lidar: 0.0 # Time offset between LiDAR and IMU calibrated by other algorithms, e.g., LI-Init (find in Readme)
       # the timesample of IMU is transferred from the current timeline to LiDAR's timeline by subtracting this value
-      map_frame: "map"
-      odom_frame: "lidar_base_link"
+      map_frame: "odom"
+      odom_frame: "base_link"
 
     preprocess:
       lidar_type: 1
@@ -280,7 +127,7 @@ laser_mapping:
       extrinsic_T: [-0.011, -0.02329, 0.04412]
       extrinsic_R: [1., 0., 0., 0., 1., 0., 0., 0., 1.]
     odometry:
-      publish_odometry_without_downsample: false #//lmy到此一游，并把false改成true
+      publish_odometry_without_downsample: false #//lmy到此一游，并把false改成true2222
     publish:
       path_en: false #
       scan_publish_en: true
@@ -288,8 +135,8 @@ laser_mapping:
 
     pcd_save:
       use_pcd_map_: true #map1前false ,map3 true
-      prior_PCD_map_path_red: "/home/tc/Desktop/auto_sentry2025/src/auto_sentry2025/Point-LIO/PCD/2025_07_27_17_07_57_8.pcd" #map3 重命名和路径 checklist
-      prior_PCD_map_path_blue: "/home/tc/Desktop/auto_sentry2025/src/auto_sentry2025/Point-LIO/PCD/2025_07_27_17_07_57_1.pcd" #map3 重命名和路径 checklist
+      prior_PCD_map_path_red: "/home/tc/Desktop/hero_assistant_test/src/hero_assistant/Point-LIO/PCD/2026_05_13_13_43_36_1.pcd" #map3 重命名和路径 checklist
+      prior_PCD_map_path_blue: "/home/tc/Desktop/hero_assistant_test/src/hero_assistant/Point-LIO/PCD/2026_05_13_13_43_36_1.pcd" #map3 重命名和路径 checklist
       pcd_save_en: false #map1前true  ,map3 false
       interval: 900
     #RMUC
@@ -297,7 +144,7 @@ laser_mapping:
       #            init_x: 3.0
       #            init_y: 0.0
       #            init_z: 0.0
-      is_we_are_blue: false # checklist
+      is_we_are_blue: true # checklist
       init_trans_red: [1.1, 20.5, 0.0]
       initial_rot_red: [0.0, 0.0, 1.0, 0.0]
       init_trans_blue: [0.0, 0.0, 0.0]
@@ -305,12 +152,12 @@ laser_mapping:
     gcl:
       task: "A"
       angle_threshold: 0.785 # 法向量与地面夹角的角度阈值(绝对值、弧度制)
-    point_frame_id: "livox_192_168_1_104"
+    point_frame_id: "livox_frame"
     runtime_pos_log_enable: false
 
 merge_pcd_node:
   ros__parameters:
-    pcd_folder: "/home/tc/Desktop/auto_sentry2025/src/auto_sentry2025/Point-LIO/PCD"
+    pcd_folder: "/home/tc/Desktop/hero_assistant_test/src/hero_assistant/Point-LIO/PCD"
 
 robot_serial_node:
   ros__parameters:
@@ -491,7 +338,7 @@ local_costmap:
           "obstacle_layer",
           "denoise_layer",
           "inflation_layer",
-          "custom_layer",
+          # "custom_layer",
         ]
       static_layer:
         plugin: "nav2_costmap_2d::StaticLayer"
@@ -501,11 +348,11 @@ local_costmap:
         enabled: True
         observation_sources: scan1
         min_obstacle_height: -2.0
-        max_obstacle_height: 0.02
+        max_obstacle_height: 2.0
         scan1:
           topic: "/cloud_obstacle"
           expected_update_rate: 30.0
-          max_obstacle_height: 0.02 # 障碍物最大高度
+          max_obstacle_height: 2.0 # 障碍物最大高度
           min_obstacle_height: -2.0 # 障碍物最小高度
           clearing: True
           marking: True
@@ -518,13 +365,13 @@ local_costmap:
         plugin: "nav2_costmap_2d::InflationLayer"
         cost_scaling_factor: 5.0
         inflation_radius: 0.6
-      custom_layer:
-        plugin: "nav2_custom_costmap_plugin::CustomLayer"
-        enabled: False
-        removed_area_1: "[ [ 2.77883, 7.98289 ], [ 3.31415, 6.29811 ], [ 3.29415, 6.29811 ], [ 2.75883, 7.98289 ] ]" #map系坐标
-        removed_area_2: "[ [ -5.55755, 10.7086 ], [ -5.50706, 9.04566 ], [ -5.50832, 8.66972 ], [ -5.52832, 8.66972 ], [ -5.52706, 9.04566 ], [ -5.57755, 10.7086 ] ]"
-        removed_area_3: "[ [ -2.01609, 12.7895 ], [ -2.55775, 14.3335 ], [ -2.57775, 14.3335 ], [ -2.03609, 12.7895 ] ]"
-        removed_area_4: "[ [ 6.39766, 10.0603 ], [ 6.34522, 11.3317 ], [ 6.28236, 12.0238 ], [ 6.26236, 12.0238 ], [ 6.32522, 11.3317 ], [ 6.37766, 10.0603 ] ]"
+      # custom_layer:
+      #   plugin: "nav2_custom_costmap_plugin::CustomLayer"
+      #   enabled: False
+      #   removed_area_1: "[ [ 2.77883, 7.98289 ], [ 3.31415, 6.29811 ], [ 3.29415, 6.29811 ], [ 2.75883, 7.98289 ] ]" #map系坐标
+      #   removed_area_2: "[ [ -5.55755, 10.7086 ], [ -5.50706, 9.04566 ], [ -5.50832, 8.66972 ], [ -5.52832, 8.66972 ], [ -5.52706, 9.04566 ], [ -5.57755, 10.7086 ] ]"
+      #   removed_area_3: "[ [ -2.01609, 12.7895 ], [ -2.55775, 14.3335 ], [ -2.57775, 14.3335 ], [ -2.03609, 12.7895 ] ]"
+      #   removed_area_4: "[ [ 6.39766, 10.0603 ], [ 6.34522, 11.3317 ], [ 6.28236, 12.0238 ], [ 6.26236, 12.0238 ], [ 6.32522, 11.3317 ], [ 6.37766, 10.0603 ] ]"
       denoise_layer:
         plugin: "nav2_costmap_2d::DenoiseLayer"
         enabled: True
@@ -549,7 +396,7 @@ global_costmap:
           "obstacle_layer",
           "denoise_layer",
           "inflation_layer",
-          "custom_layer",
+          # "custom_layer",
         ]
       static_layer:
         plugin: "nav2_costmap_2d::StaticLayer"
@@ -559,11 +406,11 @@ global_costmap:
         enabled: True
         observation_sources: scan1
         min_obstacle_height: -2.0
-        max_obstacle_height: 0.02
+        max_obstacle_height: 2.0
         scan1:
           topic: "/cloud_obstacle"
           expected_update_rate: 30.0
-          max_obstacle_height: 0.02 # 障碍物最大高度
+          max_obstacle_height: 2.0 # 障碍物最大高度
           min_obstacle_height: -2.0 # 障碍物最小高度
           clearing: True
           marking: True
@@ -576,13 +423,13 @@ global_costmap:
         plugin: "nav2_costmap_2d::InflationLayer"
         cost_scaling_factor: 5.0
         inflation_radius: 0.6
-      custom_layer:
-        plugin: "nav2_custom_costmap_plugin::CustomLayer"
-        enabled: True
-        removed_area_1: "[ [ 2.77883, 7.98289 ], [ 3.31415, 6.29811 ], [ 3.29415, 6.29811 ], [ 2.75883, 7.98289 ] ]" #map系坐标
-        removed_area_2: "[ [ -5.55755, 10.7086 ], [ -5.50706, 9.04566 ], [ -5.50832, 8.66972 ], [ -5.52832, 8.66972 ], [ -5.52706, 9.04566 ], [ -5.57755, 10.7086 ] ]"
-        removed_area_3: "[ [ -2.01609, 12.7895 ], [ -2.55775, 14.3335 ], [ -2.57775, 14.3335 ], [ -2.03609, 12.7895 ] ]"
-        removed_area_4: "[ [ 6.39766, 10.0603 ], [ 6.34522, 11.3317 ], [ 6.28236, 12.0238 ], [ 6.26236, 12.0238 ], [ 6.32522, 11.3317 ], [ 6.37766, 10.0603 ] ]"
+      # custom_layer:
+      #   plugin: "nav2_custom_costmap_plugin::CustomLayer"
+      #   enabled: True
+      #   removed_area_1: "[ [ 2.77883, 7.98289 ], [ 3.31415, 6.29811 ], [ 3.29415, 6.29811 ], [ 2.75883, 7.98289 ] ]" #map系坐标
+      #   removed_area_2: "[ [ -5.55755, 10.7086 ], [ -5.50706, 9.04566 ], [ -5.50832, 8.66972 ], [ -5.52832, 8.66972 ], [ -5.52706, 9.04566 ], [ -5.57755, 10.7086 ] ]"
+      #   removed_area_3: "[ [ -2.01609, 12.7895 ], [ -2.55775, 14.3335 ], [ -2.57775, 14.3335 ], [ -2.03609, 12.7895 ] ]"
+      #   removed_area_4: "[ [ 6.39766, 10.0603 ], [ 6.34522, 11.3317 ], [ 6.28236, 12.0238 ], [ 6.26236, 12.0238 ], [ 6.32522, 11.3317 ], [ 6.37766, 10.0603 ] ]"
       denoise_layer:
         plugin: "nav2_costmap_2d::DenoiseLayer"
         enabled: True
@@ -615,7 +462,7 @@ behavior_server:
     point_topic: "/cloud_obstacle"
     cycle_frequency: 50.0
     behavior_plugins: ["keep_away_from_obstacles"]
-    robot_radius: 0.3
+    robot_radius: 0.5
     keep_away_from_obstacles:
       plugin: "nav2_behaviors/KeepAwayFromObstacles"
     global_frame: map
@@ -646,31 +493,6 @@ velocity_smoother:
     deadband_velocity: [0.0, 0.0, 0.0]
     velocity_timeout: 1.0
 
-point_cloud_registration_node:
-  ros__parameters:
-    use_sim_time: true
-    global_frame_id: map
-    odom_frame_id: aligned_map
-    registration_method: "NDT_OMP" # "NDT"或"GICP"或"NDT_OMP"或"GICP_OMP"
-    point_topic: "/cloud_registered_body" # 订阅点云的话题，如果点云不在odom坐标系下，会进行坐标变换，如果点云在odom坐标系下，不进行坐标变换
-    transform_epsilon: 0.01 # 变换中的小量用于停止匹配迭代
-    stamp_epsilon: 0.1 # tf变换和点云时间戳之间的最大差异，单位为秒，超过此值的点云将被丢弃，不进行匹配
-    # score_threshold: 2.0 # 分数阈值
-    ndt_resolution: 1.0 # NDT分辨率
-    ndt_step_size: 0.2 # NDT步长
-    ndt_num_threads: 0 # NDT线程数 0为使用最大允许线程数
-    use_voxel_grid_filter: false # 是否使用点云下采样，即使为false，ICP算法也会在读取pcd时进行下采样，只是不会在订阅点云时进行下采样
-    voxel_leaf_size: 0.1 # 输入点云的下采样大小
-    pcd_path: "/home/tc/Desktop/auto_sentry2025/src/auto_sentry2025/Point-LIO/PCD/RMUC/2025_05_18_23_54_52_merged.pcd"
-    initial_trans: [0.0, 0.0, 0.0] # 初始位姿
-    initial_rot: [0.0, 0.0, 0.0, 1.0] # 初始四元数
-    scan_range:
-      min_x: -100.0
-      max_x: 100.0
-      min_y: -100.0
-      max_y: 100.0
-      min_z: -100.0
-      max_z: 100.0
 
 navigation_manager:
   ros__parameters:
